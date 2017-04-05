@@ -4,11 +4,11 @@ class genericState
 {
 public:
 
-	virtual ?a onEv1(?b ) { return ?a };
-	virtual ?a onEv2(?b ) { return ?a };
-	...
-	...
-	virtual ?a onEvn(?b ) { return ?a };
+	virtual ?a onEv1(?b ) { return NULL };	//onAlarmSet
+	virtual ?a onEv2(?b ) { return NULL };	//onPM
+	virtual ?a onEv2(?b ) { return NULL };	//onTimeOut
+	(...);
+	virtual ?a onEvn(?b ) { return ?a };	//onPP
 
 };
 
@@ -17,7 +17,7 @@ class genericFMS
 {
 public:
 	genericFMS();
-	void dispach(eventObj& ev);
+	void dispach(genericEvent& ev);
 
 private:
 
@@ -26,20 +26,74 @@ protected:
 
 };
 
-void genericFMS::dispach(eventObj& ev)
+void genericFMS::dispach(genericEvent& ev)
 {
+	genericState * newState;
+	
 	switch (ev.type)
 	{
-	case EV1:
-		currentState->onEv1();
+	case PRESIONE_MUCHO:
+		newState = CurrentState->omPM();
 		break;
-	case EV2:
-		currentState->onEv2();
-		break;
-
-		(...)
-	case EVn:
-		currentState->onEvn();
+	case ALARM_TIME:
+		newState = currentState->onAlarmSet();
 		break;
 	}
+
+	if (newSate != NULL)
+	{
+		delete currentState;
+		currentState = newState;
+	}
 }
+
+
+class genericEvent
+{
+public:
+	eventType type()
+	{
+		return ev;
+	}
+protected:
+	eventType ev;
+
+private:
+
+};
+
+
+class EV1: public genericEvent
+{
+public:
+	EV1() { ev = EV1; }		//ALARMSET
+	funciones especificas;
+
+private:
+	datos especificos;
+};
+
+
+class ringing: public genericState
+{
+public:
+	genericState * onPm(genericEvent * ? )
+	{
+		genericState ... ? ;
+
+
+		ret = new Idle();
+		return ret;
+	}
+private:
+
+};
+
+class PM: public genericEvent
+{
+public:
+	PM() { ev = Precione_MUCHO; }
+	(...);
+private:
+
+};
