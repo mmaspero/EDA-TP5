@@ -1,9 +1,8 @@
 extern "C" {
-#include <stdio.h>
-#include <stdlib.h>
 #include "curses.h"
 }
-
+#include <cstdio>
+#include <cstdlib>
 #include "GenericEvent.h"
 
 void dispatch(genericEvent&);
