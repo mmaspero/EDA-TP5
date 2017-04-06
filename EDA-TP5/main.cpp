@@ -1,99 +1,67 @@
-#include <iostream>
+extern "C" {
+#include <stdio.h>
+#include <stdlib.h>
+#include "curses.h"
+}
 
-class genericState
+#include "GenericEvent.h"
+
+void dispatch(genericEvent&);
+
+
+int main(void) 
 {
-public:
+	WINDOW * winTest=NULL;                     //Variable en dónde se guarda la terminal (Window) en donde voy a trabajar.
+	int i;				                       //Variable para iterar
+	int xWinTestPos ,yWinTestPos;              //Variables en donde voy a guardar la posición del cursor.
+	genericEvent * newEv;
 
-	virtual ?a onEv1(?b ) { return NULL };	//onAlarmSet
-	virtual ?a onEv2(?b ) { return NULL };	//onPM
-	virtual ?a onEv2(?b ) { return NULL };	//onTimeOut
-	(...);
-	virtual ?a onEvn(?b ) { return ?a };	//onPP
+	//Inicializo la terminal y verifico que se haya inicializado correctamente:
+	winTest = initscr();
+	if(winTest == NULL)
+	{
+		return EXIT_FAILURE;
+	}
+	//Esta opción hace que siempre que se llame a una función que escribe se refresque la pantalla.
+	immedok(winTest,TRUE);
+	//Con las dos opciones de abajo elijo que el getch()sea no bloqueante (nodelay TRUE) y que no
+	//muestr los caracteres cuando el usuario los escribe (noecho).
+	nodelay(winTest, TRUE);
+	noecho();
 
-};
+
+	printw("Programa de simulación de cliente TFTP implementado con FSM \n\n"
+		"Cuando el usuario presiona las teclas de Eventos entiende \n"
+		"que se generó un nuevo evento y responde ante ese evento \n"
+		"realizando una acción y cambiando el estado.");
 
 
-class genericFMS
-{
-public:
-	genericFMS();
-	void dispach(genericEvent& ev);
 
-private:
+	move(2*EVENT_COUNT + 2,0);			
+	printw("Press \"Q\" to continue...\n");
 
-protected:
-	genericState *CurrentState;
+	do {
+		newEv = eventGenerator();
 
-};
-
-void genericFMS::dispach(genericEvent& ev)
-{
-	genericState * newState;
+		if (newEv != NULL && newEv->type != EXIT) {
+			dispatch(*newEv);
+			delete newEv;
+		}
+	}
+	while (newEv->type != EXIT);
 	
-	switch (ev.type)
-	{
-	case PRESIONE_MUCHO:
-		newState = CurrentState->omPM();
-		break;
-	case ALARM_TIME:
-		newState = currentState->onAlarmSet();
-		break;
-	}
+	delete newEv;
+	
 
-	if (newSate != NULL)
-	{
-		delete currentState;
-		currentState = newState;
-	}
+	//Llamo para termiar PDCurses.
+	endwin();
+	
+		
+	return 0;
 }
 
 
-class genericEvent
-{
-public:
-	eventType type()
-	{
-		return ev;
-	}
-protected:
-	eventType ev;
-
-private:
-
-};
 
 
-class EV1: public genericEvent
-{
-public:
-	EV1() { ev = EV1; }		//ALARMSET
-	funciones especificas;
-
-private:
-	datos especificos;
-};
 
 
-class ringing: public genericState
-{
-public:
-	genericState * onPm(genericEvent * ? )
-	{
-		genericState ... ? ;
-
-
-		ret = new Idle();
-		return ret;
-	}
-private:
-
-};
-
-class PM: public genericEvent
-{
-public:
-	PM() { ev = Precione_MUCHO; }
-	(...);
-private:
-
-};
